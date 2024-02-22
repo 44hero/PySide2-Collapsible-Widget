@@ -6,8 +6,8 @@ Container.py
 :Author:
     oki yoshihiro
     okiyoshihiro.job@gmail.com
-:Version: -2.0-
-:Date: 2024/02/09
+:Version: -2.1-
+:Date: 2024/02/22
 
 .. note:: 当コード記述時の環境
 
@@ -58,6 +58,27 @@ Container.py
         ##############################
 
 -リマインダ-
+    done: 2024/02/19~2024/02/22
+        - 追加箇所2(+)・変換箇所2(-/+)
+            - 概要: 当モジュールの読み込み先での、各種操作の実現の為
+            - 詳細:
+                ::
+
+                    +   def outPut_content_status(self):
+                            ...
+
+                    -   self.collapse = self.header.collapse
+                    -   self.expand = self.header.expand
+                    -   self.toggle = self.header.mousePressEvent
+                    +   def collapse(self):  # ヘッダーメソッド「collapse()」へアクセス
+                            ...
+                    +   def expand(self):  # ヘッダーメソッド「expand()」へアクセス
+                            ...
+                    +   def toggle(self):  # ヘッダーメソッド「mousePressEvent()」へアクセス
+                            ...
+
+        version = '-2.1-'
+
     done: 2024/02/09
         - 追加箇所1(+)・変換箇所1(-/+)
             - 概要: 当モジュールの読み込み先での、シグナル と スロット 接続の実現の為
@@ -71,7 +92,7 @@ Container.py
                     +   self.widget = ClickableWidget()  # クリック信号を出すウィジェットへ変更と、コンストラクタ化
 
                     +   @property
-                        def headerWidget(self):  # headerWidget プロパティを準備し、容易なアクセスを可にする
+                        def clickableHeaderWidget(self):  # headerWidget プロパティを準備し、容易なアクセスを可にする
                             ...
 
                     -   header = Header(name, self._content_widget)
@@ -82,12 +103,17 @@ Container.py
                             ...
 
         version = '-2.0-'
+
     done: 2024/01/29
         新規作成
 
         version = '-1.0-'
 """
 
+# 標準ライブラリ
+from typing import Tuple
+
+# サードパーティライブラリ
 from PySide2.QtWidgets import (QWidget, QHBoxLayout, QVBoxLayout, QPushButton,
                                QLabel, QSpacerItem, QSizePolicy, QStackedLayout,
                                QGridLayout
@@ -169,6 +195,7 @@ class Header(QWidget):
 
     def mousePressEvent(self, *args):  # ボタンをクリックした時に、発動させたい
         """Handle mouse events, call the function to toggle groups"""
+        # print(args)
         # self.expand() if not self.content.isVisible() else self.collapse()
         if not self.content.isVisible():
             self.expand()
@@ -179,7 +206,7 @@ class Header(QWidget):
         # return self.content_, self.toggle_, self.height_
         # self.outPut_content_status()
         # print(type(self.height_))
-        # print(self.outPut_content_status())
+        # print(self.outPut_content_status)
         # print(self.height_)
 
     def expand(self):
@@ -202,13 +229,25 @@ class Header(QWidget):
         # testで追加 ################################ end
 
     # 追加箇所1
+    # Clickable headerWidget プロパティを準備し、その該当 widget を返し、容易なアクセスを可にします
     @property
-    def headerWidget(self):  # headerWidget プロパティを準備し、容易なアクセスを可にする
-        """Getter for the header widget
+    def clickableHeaderWidget(self):
+        """Getter for the header Clickable widget
 
-        Returns: widget header
+        Returns: header Clickable widget
         """
         return self.widget
+
+    # 各 Header Widget の折り畳みの状況を調べ、返す 関数
+    # 追加箇所2
+    def outPut_content_status(self):
+        u""" < 各 Header Widget の折り畳みの状況を調べ、返す 関数 です>
+
+        :return: self.content.isVisible(): 折り畳みの状況(bool)
+            , self.content: content_widget name
+        :rtype:  Tuple[bool | None, QWidget]
+        """
+        return self.content.isVisible(), self.content
 
 
 class Container(QWidget):
@@ -249,14 +288,50 @@ class Container(QWidget):
 
         # assign self.header methods to instance attributes so they can be called outside of this class
         # ヘッダー メソッドをインスタンス属性に割り当てて、このクラスの外部でヘッダー メソッドを呼び出せるようにします。
-        self.collapse = self.header.collapse
-        self.expand = self.header.expand
-        self.toggle = self.header.mousePressEvent
+        # self.collapse = self.header.collapse  # 変換箇所2
+        # self.expand = self.header.expand  # 変換箇所2
+        # self.toggle = self.header.mousePressEvent  # 変換箇所2
 
-        # # testで追加 ################################ start
-        # self.outPut_content_status = self.header.outPut_content_status
-        # # testで追加 ################################ end
+    # 変換箇所2
+    # 当クラスの外部で、ヘッダーのメソッドを呼び出せるようにしたい。
+    # しかし、ヘッダーのメソッドをインスタンス属性に割り当てており、隠ぺいになりがちだった為、
+    # 理解しやすく、メソッドへ変更し、表に出しました。
+    # 以下3つ、collapse(self), expand(self), toggle(self)
 
+    # 変換箇所2
+    # ヘッダーメソッド「collapse()」へアクセス
+    def collapse(self):
+        u""" < ヘッダーメソッド「collapse()」へアクセス >
+
+        オリジナル
+            self.collapse = self.header.collapse
+                に相当します
+        """
+        return self.header.collapse()
+
+    # 変換箇所2
+    # ヘッダーメソッド「expand()」へアクセス
+    def expand(self):
+        u""" < ヘッダーメソッド「expand()」へアクセス >
+
+        オリジナル
+            self.expand = self.header.expand
+                に相当します
+        """
+        return self.header.expand()
+
+    # 変換箇所2
+    # ヘッダーメソッド「mousePressEvent()」へアクセス
+    def toggle(self):
+        u""" < ヘッダーメソッド「mousePressEvent()」へアクセス >
+
+        オリジナル
+            self.toggle = self.header.mousePressEvent
+                に相当します
+        """
+        return self.header.mousePressEvent()
+
+    # Container で定義する Content widget を返す
     @property
     def contentWidget(self):
         """Getter for the content widget
@@ -266,15 +341,26 @@ class Container(QWidget):
         # print('execute, contentWidget')
         return self._content_widget
 
+    # Container で定義する Content header widget を返す
     # 追加箇所1
     @property
     def contentHeader(self):  # container header プロパティを準備し、容易なアクセスを可にする
-        """Getter for the content header
+        """Getter for the content header widget
 
-        Returns: Content header
+        Returns: Content header widget
         """
         return self.header
 
     # @property
     # def outPut_container_height(self):
     #     return self._content_widget.height()
+
+
+if __name__ == '__main__':
+    print(u'{}.py: loaded as script file'.format(__name__))
+else:
+    print(u'{}.py: loaded as module file'.format(__name__))
+    print('{}'.format(__file__))  # 実行したモジュールフルパスを表示する
+# pprint.pprint(RT4_UI_PyMel.mro())  # メソッドを呼び出す順番が解ります
+
+print(u'モジュール名:{}\n'.format(__name__))  # 実行したモジュール名を表示する
