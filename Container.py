@@ -6,8 +6,8 @@ Container.py
 :Author:
     oki yoshihiro
     okiyoshihiro.job@gmail.com
-:Version: -2.1-
-:Date: 2024/02/22
+:Version: -2.2-
+:Date: 2024/03/03
 
 .. note:: 当コード記述時の環境
 
@@ -33,7 +33,7 @@ Container.py
         # ローカルで作成したモジュール
         import Container
         reload(Container)
-        from Container import Container, Header
+        from Container import Container
 
         # 以下 e.g.):
         ############################################################
@@ -58,6 +58,19 @@ Container.py
         ##############################
 
 -リマインダ-
+    done: 2024/03/03
+        - 追加箇所3(+)・変換箇所3(-/+)
+            - 概要: 当モジュールの読み込み先での、各種操作の実現の為
+            - 詳細:
+                ::
+
+                    +   # background_header プロパティを準備し、self.background への容易なアクセスを可にする
+                        @property
+                        def background_header(self):
+                            ...
+
+        version = '-2.2-'
+
     done: 2024/02/19~2024/02/22
         - 追加箇所2(+)・変換箇所2(-/+)
             - 概要: 当モジュールの読み込み先での、各種操作の実現の為
@@ -157,8 +170,8 @@ class Header(QWidget):
 
         stacked = QStackedLayout(self)
         stacked.setStackingMode(QStackedLayout.StackAll)
-        background = QLabel()
-        background.setStyleSheet(
+        self.background = QLabel()
+        self.background.setStyleSheet(
             "QLabel{ background-color: rgb(93, 93, 93); border-radius:2px}"
             )
 
@@ -183,8 +196,8 @@ class Header(QWidget):
             )
 
         stacked.addWidget(self.widget)
-        stacked.addWidget(background)
-        background.setMinimumHeight(layout.sizeHint().height() * 1.5)
+        stacked.addWidget(self.background)
+        self.background.setMinimumHeight(layout.sizeHint().height() * 1.5)
 
         # testで追加 ################################ start
         self.content_ = None
@@ -238,8 +251,8 @@ class Header(QWidget):
         """
         return self.widget
 
-    # 各 Header Widget の折り畳みの状況を調べ、返す 関数
     # 追加箇所2
+    # 各 Header Widget の折り畳みの状況を調べ、返す 関数
     def outPut_content_status(self):
         u""" < 各 Header Widget の折り畳みの状況を調べ、返す 関数 です>
 
@@ -248,6 +261,20 @@ class Header(QWidget):
         :rtype:  Tuple[bool | None, QWidget]
         """
         return self.content.isVisible(), self.content
+
+    # 追加箇所3
+    # background_header プロパティを準備し、self.background への容易なアクセスを可にする
+    # Header の QLabel を返す 関数
+    @property
+    def background_header(self):
+        u""" < Header の QLabel を返す 関数 関数 です>
+
+        background_header プロパティを準備し、self.background への容易なアクセスを可にする
+
+        :return: self.background: Header の QLabel name
+        :rtype:  QLabel | QLabel
+        """
+        return self.background
 
 
 class Container(QWidget):
