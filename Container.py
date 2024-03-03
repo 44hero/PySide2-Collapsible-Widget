@@ -64,6 +64,9 @@ Container.py
             - 詳細:
                 ::
 
+                    -   background = QLabel()
+                    +   self.background = QLabel()
+
                     +   # background_header プロパティを準備し、self.background への容易なアクセスを可にする
                         @property
                         def background_header(self):
@@ -170,7 +173,8 @@ class Header(QWidget):
 
         stacked = QStackedLayout(self)
         stacked.setStackingMode(QStackedLayout.StackAll)
-        self.background = QLabel()
+        # 変換箇所3
+        self.background = QLabel()  # background -> self.background
         self.background.setStyleSheet(
             "QLabel{ background-color: rgb(93, 93, 93); border-radius:2px}"
             )
