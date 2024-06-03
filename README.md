@@ -2,8 +2,12 @@
 
 Simple collapsible widget for PySide2, made to mimic Maya's native GUI
 
-it`s mine, mpodify
+it`s edit modify version
+
 [![Image from Gyazo](https://i.gyazo.com/53dd3783ecbd4d84ab5b95b99b0721d2.gif)](https://gyazo.com/53dd3783ecbd4d84ab5b95b99b0721d2)
+
+
+fisrt
 
 ![demo](https://user-images.githubusercontent.com/50831997/120691061-49667a00-c4a6-11eb-82fd-dd70270dd1a9.gif)
 
